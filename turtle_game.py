@@ -8,6 +8,7 @@ from player import TurtlePlayer
 from ground import Ground
 from enemy import Enemy
 from coin import Coin
+from scoreboard import Scoreboard
 
 class TurtleGame:
     """Overall class to manage game assets"""
@@ -23,6 +24,10 @@ class TurtleGame:
         pygame.display.set_caption("Tortuguita")
 
         self.background_image = pygame.image.load('images/background.jpg')
+
+        # Scoring system
+        self.score = 0
+        self.scoreboard = Scoreboard(self)
 
         # Instantiate resources
         self.turtle = TurtlePlayer(self)
@@ -61,6 +66,7 @@ class TurtleGame:
         """Redraw screen and resources"""
         self.screen.blit(self.background_image, (0,0))
         # self.screen.fill(self.settings.bg_color)
+        self.scoreboard.show_score()
         self.ground.draw(self.screen)
         self.enemies.draw(self.screen)
         self.coins.draw(self.screen)
@@ -79,6 +85,13 @@ class TurtleGame:
         if (pygame.sprite.spritecollideany(self.turtle, self.enemies)
             or pygame.sprite.spritecollideany(self.turtle, self.ground)):
             self._turtle_hit()
+
+        # Update score
+        collected_coin = pygame.sprite.spritecollideany(self.turtle, self.coins) 
+        if collected_coin:
+            self.score += 1
+            self.scoreboard.prep_score()
+            collected_coin.kill()
     
     def _spawn_enemies(self):
         """Spawn enemies into game"""
@@ -103,6 +116,9 @@ class TurtleGame:
         self.enemies.empty()
         self.coins.empty()
         self.turtle.center()
+
+        self.score = 0
+        self.scoreboard.prep_score()
 
         # Pause
         time.sleep(0.5)
