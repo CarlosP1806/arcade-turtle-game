@@ -65,7 +65,6 @@ class TurtleGame:
     def _update_screen(self):
         """Redraw screen and resources"""
         self.screen.blit(self.background_image, (0,0))
-        # self.screen.fill(self.settings.bg_color)
         self.scoreboard.show_score()
         self.ground.draw(self.screen)
         self.enemies.draw(self.screen)
